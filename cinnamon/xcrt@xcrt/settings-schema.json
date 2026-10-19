@@ -1,0 +1,442 @@
+{
+    "layout": {
+        "type": "layout",
+        "pages": [
+            "general",
+            "geometry",
+            "image",
+            "interference"
+        ],
+        "general": {
+            "type": "page",
+            "title": "General",
+            "sections": [
+                "s-effect",
+                "s-behavior",
+                "s-shortcuts"
+            ]
+        },
+        "geometry": {
+            "type": "page",
+            "title": "Geometry & lines",
+            "sections": [
+                "s-curvature",
+                "s-scanlines",
+                "s-mask"
+            ]
+        },
+        "image": {
+            "type": "page",
+            "title": "Image",
+            "sections": [
+                "s-beam",
+                "s-brightness",
+                "s-color"
+            ]
+        },
+        "interference": {
+            "type": "page",
+            "title": "Interference",
+            "sections": [
+                "s-interference"
+            ]
+        },
+        "s-effect": {
+            "type": "section",
+            "title": "Effect",
+            "keys": [
+                "active",
+                "preset",
+                "curvature-scale"
+            ]
+        },
+        "s-behavior": {
+            "type": "section",
+            "title": "Behavior",
+            "keys": [
+                "draw-cursor",
+                "fullscreen"
+            ]
+        },
+        "s-shortcuts": {
+            "type": "section",
+            "title": "Keyboard shortcuts",
+            "keys": [
+                "toggle-key",
+                "next-preset-key",
+                "curvature-up-key",
+                "curvature-down-key"
+            ]
+        },
+        "s-curvature": {
+            "type": "section",
+            "title": "Tube curvature",
+            "keys": [
+                "curvature-x",
+                "curvature-y",
+                "corner-radius"
+            ]
+        },
+        "s-scanlines": {
+            "type": "section",
+            "title": "Scanlines",
+            "keys": [
+                "scanline-strength",
+                "scanline-size"
+            ]
+        },
+        "s-mask": {
+            "type": "section",
+            "title": "Phosphor mask",
+            "keys": [
+                "mask",
+                "mask-strength",
+                "mask-size"
+            ]
+        },
+        "s-beam": {
+            "type": "section",
+            "title": "Beam",
+            "keys": [
+                "softness",
+                "chroma"
+            ]
+        },
+        "s-brightness": {
+            "type": "section",
+            "title": "Brightness & glow",
+            "keys": [
+                "bloom",
+                "bloom-radius",
+                "vignette",
+                "brightness",
+                "contrast",
+                "saturation",
+                "gamma"
+            ]
+        },
+        "s-color": {
+            "type": "section",
+            "title": "Phosphor color",
+            "keys": [
+                "monochrome",
+                "tint"
+            ]
+        },
+        "s-interference": {
+            "type": "section",
+            "title": "Analog signal",
+            "keys": [
+                "noise",
+                "flicker",
+                "jitter",
+                "roll",
+                "roll-speed"
+            ]
+        }
+    },
+    "active": {
+        "type": "switch",
+        "default": true,
+        "description": "Filter on"
+    },
+    "preset": {
+        "type": "combobox",
+        "default": "arcade",
+        "description": "Preset",
+        "tooltip": "Picking a preset sets every effect. Changing any effect switches to Custom.",
+        "options": {
+            "Arcade": "arcade",
+            "PC monitor": "pc",
+            "Trinitron": "trinitron",
+            "CRT TV": "tv",
+            "Green phosphor": "green",
+            "Amber phosphor": "amber",
+            "Custom": "custom"
+        }
+    },
+    "curvature-scale": {
+        "type": "scale",
+        "default": 100,
+        "min": 0,
+        "max": 300,
+        "step": 5,
+        "digits": 0,
+        "description": "Curvature intensity",
+        "units": "%",
+        "show-value": true,
+        "tooltip": "Multiplies the curvature of any preset: 0% makes the screen flat."
+    },
+    "draw-cursor": {
+        "type": "switch",
+        "default": true,
+        "description": "Cursor follows the curvature",
+        "tooltip": "Draws the cursor inside the filter, so clicks land where it appears."
+    },
+    "fullscreen": {
+        "type": "switch",
+        "default": true,
+        "description": "Also apply to fullscreen windows",
+        "tooltip": "Fullscreen games and videos normally bypass the compositor; this keeps them inside the filter."
+    },
+    "toggle-key": {
+        "type": "keybinding",
+        "default": "<Super><Shift>F12",
+        "description": "Toggle the filter"
+    },
+    "next-preset-key": {
+        "type": "keybinding",
+        "default": "<Super><Shift>F11",
+        "description": "Next preset"
+    },
+    "curvature-up-key": {
+        "type": "keybinding",
+        "default": "<Super><Shift>Page_Up",
+        "description": "More curvature"
+    },
+    "curvature-down-key": {
+        "type": "keybinding",
+        "default": "<Super><Shift>Page_Down",
+        "description": "Less curvature"
+    },
+    "curvature-x": {
+        "type": "scale",
+        "default": 0.1,
+        "min": 0,
+        "max": 0.3,
+        "step": 0.005,
+        "digits": 3,
+        "description": "Horizontal curvature",
+        "show-value": true
+    },
+    "curvature-y": {
+        "type": "scale",
+        "default": 0.1,
+        "min": 0,
+        "max": 0.3,
+        "step": 0.005,
+        "digits": 3,
+        "description": "Vertical curvature",
+        "show-value": true
+    },
+    "corner-radius": {
+        "type": "scale",
+        "default": 0.03,
+        "min": 0,
+        "max": 0.15,
+        "step": 0.005,
+        "digits": 3,
+        "description": "Rounded corners",
+        "show-value": true
+    },
+    "scanline-strength": {
+        "type": "scale",
+        "default": 0.55,
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Strength",
+        "show-value": true
+    },
+    "scanline-size": {
+        "type": "scale",
+        "default": 4,
+        "min": 1,
+        "max": 8,
+        "step": 0.5,
+        "digits": 1,
+        "description": "Line height",
+        "units": "px",
+        "show-value": true
+    },
+    "mask": {
+        "type": "combobox",
+        "default": "slot",
+        "description": "Type",
+        "options": {
+            "None": "none",
+            "Aperture grille": "aperture",
+            "Slot mask": "slot",
+            "Shadow mask": "shadow"
+        }
+    },
+    "mask-strength": {
+        "type": "scale",
+        "default": 0.3,
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Strength",
+        "show-value": true
+    },
+    "mask-size": {
+        "type": "scale",
+        "default": 3,
+        "min": 1,
+        "max": 8,
+        "step": 0.5,
+        "digits": 1,
+        "description": "Triad size",
+        "units": "px",
+        "show-value": true
+    },
+    "softness": {
+        "type": "scale",
+        "default": 0.6,
+        "min": 0,
+        "max": 3,
+        "step": 0.05,
+        "digits": 2,
+        "description": "Softness",
+        "units": "px",
+        "show-value": true
+    },
+    "chroma": {
+        "type": "scale",
+        "default": 0.8,
+        "min": 0,
+        "max": 4,
+        "step": 0.05,
+        "digits": 2,
+        "description": "Chromatic aberration",
+        "units": "px",
+        "show-value": true
+    },
+    "bloom": {
+        "type": "scale",
+        "default": 0.35,
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Bloom",
+        "show-value": true
+    },
+    "bloom-radius": {
+        "type": "scale",
+        "default": 1,
+        "min": 0.2,
+        "max": 4,
+        "step": 0.05,
+        "digits": 2,
+        "description": "Bloom radius",
+        "show-value": true
+    },
+    "vignette": {
+        "type": "scale",
+        "default": 0.35,
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Vignette",
+        "show-value": true
+    },
+    "brightness": {
+        "type": "scale",
+        "default": 1.25,
+        "min": 0.5,
+        "max": 2.5,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Brightness",
+        "show-value": true
+    },
+    "contrast": {
+        "type": "scale",
+        "default": 1,
+        "min": 0.5,
+        "max": 2,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Contrast",
+        "show-value": true
+    },
+    "saturation": {
+        "type": "scale",
+        "default": 1.15,
+        "min": 0,
+        "max": 2,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Saturation",
+        "show-value": true
+    },
+    "gamma": {
+        "type": "scale",
+        "default": 1,
+        "min": 0.5,
+        "max": 2,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Gamma",
+        "show-value": true
+    },
+    "monochrome": {
+        "type": "switch",
+        "default": false,
+        "description": "Monochrome"
+    },
+    "tint": {
+        "type": "colorchooser",
+        "default": "rgb(255,255,255)",
+        "description": "Phosphor color"
+    },
+    "noise": {
+        "type": "scale",
+        "default": 0.02,
+        "min": 0,
+        "max": 0.3,
+        "step": 0.005,
+        "digits": 3,
+        "description": "Noise",
+        "show-value": true
+    },
+    "flicker": {
+        "type": "scale",
+        "default": 0.015,
+        "min": 0,
+        "max": 0.2,
+        "step": 0.005,
+        "digits": 3,
+        "description": "Flicker",
+        "show-value": true
+    },
+    "jitter": {
+        "type": "scale",
+        "default": 0,
+        "min": 0,
+        "max": 3,
+        "step": 0.05,
+        "digits": 2,
+        "description": "Horizontal jitter",
+        "units": "px",
+        "show-value": true
+    },
+    "roll": {
+        "type": "scale",
+        "default": 0,
+        "min": 0,
+        "max": 0.5,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Hum bar",
+        "show-value": true
+    },
+    "roll-speed": {
+        "type": "scale",
+        "default": 0.1,
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "digits": 2,
+        "description": "Hum bar speed",
+        "show-value": true
+    },
+    "param-backup": {
+        "type": "generic",
+        "default": {}
+    }
+}

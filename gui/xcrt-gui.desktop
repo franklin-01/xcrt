@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=xcrt
+GenericName=CRT Filter
+Comment=Adjust the effects of the xcrt CRT filter
+Exec=xcrt-gui
+Icon=video-display
+Terminal=false
+Categories=Settings;DesktopSettings;
+Keywords=crt;retro;scanlines;shader;compositor;

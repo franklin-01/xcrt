@@ -1,0 +1,65 @@
+# xcrt configuration
+# Copy to ~/.config/xcrt/xcrt.conf and reload with:  pkill -HUP -x xcrt
+
+[general]
+preset = arcade              # starting preset (xcrt --list-presets)
+enabled = true               # start with the effect on
+draw_cursor = true           # draw the cursor through the filter so it follows the curvature
+vsync = true
+background = #000000         # desktop colour when no wallpaper is set (feh, nitrogen, ... set one)
+
+# Curvature intensity: multiplies every preset's curvature.
+# 0 = flat, 1 (100%) = as the preset defines it, up to 3 (300%).
+curvature_scale = 100%
+curvature_step = 10%         # change per key press
+
+# Modifiers: Super, Shift, Ctrl, Alt. Keys use X keysym names (F12, c, Page_Up, ...).
+toggle_key = Super+Shift+F12
+next_preset_key = Super+Shift+F11
+prev_preset_key = Super+Shift+F10
+curvature_up_key = Super+Shift+Page_Up
+curvature_down_key = Super+Shift+Page_Down
+curvature_reset_key = Super+Shift+Home    # back to curvature_scale
+
+# Built-in presets: arcade, pc, trinitron, tv, green, amber.
+# A [preset NAME] section edits an existing preset or creates a new one.
+# "base = OTHER" copies every value from OTHER; put it first in the section.
+#
+# All parameters (neutral value in parentheses):
+#
+#   curvature          barrel distortion on both axes (0); curvature_x / curvature_y set one axis
+#   corner_radius      rounded tube corners, fraction of the shorter side (0)
+#   scanline_strength  0 = no scanlines, 1 = black gaps between lines (0)
+#   scanline_size      screen pixels per scanline (3)
+#   mask               none | aperture | slot | shadow (none)
+#   mask_strength      how dark the gaps between phosphors are (0)
+#   mask_size          screen pixels per RGB triad (3)
+#   softness           horizontal beam blur in pixels (0)
+#   chroma             chromatic aberration at the edges, in pixels (0)
+#   bloom              glow around bright areas (0)
+#   bloom_radius       size of the glow (1)
+#   vignette           darkening towards the edges (0)
+#   noise              animated static (0)
+#   flicker            brightness flicker per frame (0)
+#   jitter             horizontal line wobble in pixels (0)
+#   roll               strength of the rolling hum bar (0)
+#   roll_speed         screens per second the hum bar travels (0.1)
+#   brightness         final brightness multiplier (1)
+#   contrast, saturation, gamma    colour grading (1)
+#   monochrome         true for single-colour phosphor screens (false)
+#   tint               phosphor colour, "#rrggbb" or "r g b" (#ffffff)
+#   persistence        phosphor afterglow per frame, 0 to 0.98 (0)
+
+# Example: a softer arcade look for everyday work
+[preset arcade-lite]
+base = arcade
+curvature = 0.05
+scanline_strength = 0.35
+noise = 0
+flicker = 0
+
+# Example: IBM 5151-style white phosphor
+[preset paperwhite]
+base = green
+tint = #e8f0ff
+persistence = 0.5

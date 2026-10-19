@@ -1,0 +1,13 @@
+{
+    "uuid": "xcrt@xcrt",
+    "name": "xcrt – CRT filter",
+    "description": "Turns your desktop into a tube monitor: curvature, scanlines, phosphor mask, bloom, noise and more, with presets.",
+    "version": "1.0",
+    "cinnamon-version": [
+        "6.0",
+        "6.2",
+        "6.4",
+        "6.6"
+    ],
+    "max-instances": 1
+}
