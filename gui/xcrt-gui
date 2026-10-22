@@ -392,7 +392,7 @@ class Window(Gtk.Window):
             self.raw_state = None
             self.banner_label.set_markup(
                 "<b>xcrt is not running</b> on display %s.\n"
-                "It needs a window manager without its own compositor (i3, openbox, …)."
+                "It runs on XFCE or on window managers without their own compositor (i3, openbox, …)."
                 % GLib.markup_escape_text(self.link.display_name))
             return True
         if text != self.raw_state:

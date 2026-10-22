@@ -59,7 +59,16 @@ install-cinnamon:
 uninstall-cinnamon:
 	rm -rf $(EXT_DIR)
 
+# Start xcrt with the session (XFCE and other XDG-autostart desktops); needs xcrt in PATH
+AUTOSTART_DIR ?= $(HOME)/.config/autostart
+
+install-autostart:
+	install -Dm644 data/xcrt-autostart.desktop $(AUTOSTART_DIR)/xcrt.desktop
+
+uninstall-autostart:
+	rm -f $(AUTOSTART_DIR)/xcrt.desktop
+
 clean:
 	rm -rf build xcrt
 
-.PHONY: all install uninstall install-cinnamon uninstall-cinnamon clean
+.PHONY: all install uninstall install-cinnamon uninstall-cinnamon install-autostart uninstall-autostart clean

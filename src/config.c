@@ -113,7 +113,7 @@ void config_init(xcrt_config *c)
     c->draw_cursor = true;
     c->vsync = true;
     c->start_enabled = true;
-    snprintf(c->start_preset, sizeof(c->start_preset), "arcade");
+    snprintf(c->start_preset, sizeof(c->start_preset), "pc");
     c->curvature_scale = 1.0f;
     c->curvature_step = 0.1f;
     config_parse_hotkey("Super+Shift+F12", &c->toggle_key);

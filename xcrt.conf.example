@@ -2,7 +2,7 @@
 # Copy to ~/.config/xcrt/xcrt.conf and reload with:  pkill -HUP -x xcrt
 
 [general]
-preset = arcade              # starting preset (xcrt --list-presets)
+preset = pc                  # starting preset (xcrt --list-presets)
 enabled = true               # start with the effect on
 draw_cursor = true           # draw the cursor through the filter so it follows the curvature
 vsync = true

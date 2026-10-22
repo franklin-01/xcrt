@@ -473,10 +473,12 @@ static bool become_compositor(xcrt *x)
     char name[32];
     snprintf(name, sizeof(name), "_NET_WM_CM_S%d", x->screen);
     Atom sel = XInternAtom(x->dpy, name, False);
+    if (!wmcomp_pause(x, name))
+        return false;
     if (XGetSelectionOwner(x->dpy, sel) != None) {
         LOG("another compositor is already running on this screen.\n"
-            "      Desktops like Cinnamon, GNOME and KDE always composite; for xfwm4, marco or\n"
-            "      picom, turn their compositing off first.\n");
+            "      Desktops like Cinnamon, GNOME and KDE always composite (Cinnamon has the\n"
+            "      xcrt@xcrt extension instead); for marco or picom, turn their compositing off first.\n");
         return false;
     }
     x->cm_owner = XCreateSimpleWindow(x->dpy, x->root, 0, 0, 1, 1, 0, 0, 0);

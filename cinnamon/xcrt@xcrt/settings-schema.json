@@ -142,7 +142,7 @@
     },
     "preset": {
         "type": "combobox",
-        "default": "arcade",
+        "default": "pc",
         "description": "Preset",
         "tooltip": "Picking a preset sets every effect. Changing any effect switches to Custom.",
         "options": {
@@ -201,7 +201,7 @@
     },
     "curvature-x": {
         "type": "scale",
-        "default": 0.1,
+        "default": 0.025,
         "min": 0,
         "max": 0.3,
         "step": 0.005,
@@ -211,7 +211,7 @@
     },
     "curvature-y": {
         "type": "scale",
-        "default": 0.1,
+        "default": 0.025,
         "min": 0,
         "max": 0.3,
         "step": 0.005,
@@ -221,7 +221,7 @@
     },
     "corner-radius": {
         "type": "scale",
-        "default": 0.03,
+        "default": 0.012,
         "min": 0,
         "max": 0.15,
         "step": 0.005,
@@ -231,7 +231,7 @@
     },
     "scanline-strength": {
         "type": "scale",
-        "default": 0.55,
+        "default": 0.25,
         "min": 0,
         "max": 1,
         "step": 0.01,
@@ -241,7 +241,7 @@
     },
     "scanline-size": {
         "type": "scale",
-        "default": 4,
+        "default": 3,
         "min": 1,
         "max": 8,
         "step": 0.5,
@@ -252,7 +252,7 @@
     },
     "mask": {
         "type": "combobox",
-        "default": "slot",
+        "default": "aperture",
         "description": "Type",
         "options": {
             "None": "none",
@@ -263,7 +263,7 @@
     },
     "mask-strength": {
         "type": "scale",
-        "default": 0.3,
+        "default": 0.12,
         "min": 0,
         "max": 1,
         "step": 0.01,
@@ -284,7 +284,7 @@
     },
     "softness": {
         "type": "scale",
-        "default": 0.6,
+        "default": 0.25,
         "min": 0,
         "max": 3,
         "step": 0.05,
@@ -295,7 +295,7 @@
     },
     "chroma": {
         "type": "scale",
-        "default": 0.8,
+        "default": 0.25,
         "min": 0,
         "max": 4,
         "step": 0.05,
@@ -306,7 +306,7 @@
     },
     "bloom": {
         "type": "scale",
-        "default": 0.35,
+        "default": 0.1,
         "min": 0,
         "max": 1,
         "step": 0.01,
@@ -326,7 +326,7 @@
     },
     "vignette": {
         "type": "scale",
-        "default": 0.35,
+        "default": 0.15,
         "min": 0,
         "max": 1,
         "step": 0.01,
@@ -336,7 +336,7 @@
     },
     "brightness": {
         "type": "scale",
-        "default": 1.25,
+        "default": 1.08,
         "min": 0.5,
         "max": 2.5,
         "step": 0.01,
@@ -356,7 +356,7 @@
     },
     "saturation": {
         "type": "scale",
-        "default": 1.15,
+        "default": 1,
         "min": 0,
         "max": 2,
         "step": 0.01,
@@ -386,7 +386,7 @@
     },
     "noise": {
         "type": "scale",
-        "default": 0.02,
+        "default": 0,
         "min": 0,
         "max": 0.3,
         "step": 0.005,
@@ -396,7 +396,7 @@
     },
     "flicker": {
         "type": "scale",
-        "default": 0.015,
+        "default": 0,
         "min": 0,
         "max": 0.2,
         "step": 0.005,

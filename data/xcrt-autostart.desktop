@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=xcrt
+Comment=CRT filter compositor
+Exec=xcrt
+Icon=video-display
+Terminal=false
+NoDisplay=true
+NotShowIn=X-Cinnamon;GNOME;KDE;

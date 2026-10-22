@@ -15,7 +15,8 @@ curvature and clicks land exactly where they appear to.
 | Environment | Works? |
 |---|---|
 | WMs without a compositor: i3, bspwm, openbox, dwm, awesome, fluxbox, herbstluftwm, IceWM… | yes |
-| xfwm4 / marco / picom | yes, after turning their compositing off |
+| XFCE (xfwm4) | yes; xcrt pauses the xfwm4 compositor by itself (see [XFCE](#xfce)) |
+| marco / picom | yes, after turning their compositing off |
 | Cinnamon | yes, through the `xcrt@xcrt` extension (see [Cinnamon](#cinnamon)) |
 | GNOME, KDE (the WM is the compositor) | not yet; they need their own plugin |
 
@@ -46,7 +47,7 @@ sudo make install        # optional: installs xcrt, xcrt-gui and the menu entry
 ## Usage
 
 ```sh
-xcrt                     # default preset (arcade)
+xcrt                     # default preset (pc)
 xcrt -p green            # pick a preset
 xcrt -k 50%              # half of the preset's curvature
 xcrt --list-presets
@@ -128,6 +129,34 @@ pkill -HUP  -x xcrt      # reload the config
 
 If xcrt hangs or dies, X hands the windows back automatically and the screen
 returns to normal.
+
+## XFCE
+
+xfwm4 has its own compositor. When xcrt starts on XFCE it switches that
+compositor off (the same switch as *Window Manager Tweaks → Compositor*) and
+switches it back on when xcrt exits. A small watchdog process, `xcrt-xfwm4`,
+does the restoring, so it also happens if xcrt crashes or is killed with
+`kill -9`. If you had already turned the xfwm4 compositor off yourself, xcrt
+leaves it off.
+
+To start xcrt with the session:
+
+```sh
+sudo make install            # xcrt must be in PATH
+make install-autostart       # adds ~/.config/autostart/xcrt.desktop
+```
+
+You can also add `xcrt` in *Settings → Session and Startup → Application
+Autostart*. While xcrt runs, xfwm4's own compositor effects (shadows, window
+opacity settings) are off.
+
+To try it without touching your session, this script opens a throwaway XFCE
+desktop (xfwm4, panel and desktop) inside Xephyr, with its own HOME, settings
+and D-Bus:
+
+```sh
+xfce/try-in-xephyr.sh
+```
 
 ## Cinnamon
 

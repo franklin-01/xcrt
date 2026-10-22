@@ -100,6 +100,10 @@ static inline const crt_preset *current_preset(const xcrt *x)
     return &x->cfg.presets[x->cfg.current];
 }
 
+/* wmcomp.c: switches off a window manager's own compositor (xfwm4) while
+ * xcrt runs and restores it afterwards. Returns false if that failed. */
+bool wmcomp_pause(xcrt *x, const char *selection);
+
 /* scene.c */
 void scene_init(xcrt *x);
 void scene_handle_event(xcrt *x, XEvent *ev);
