@@ -3,9 +3,9 @@
 
 /* Compositors that xcrt replaces while it runs, instead of refusing to start:
  *  - xfwm4 (XFCE) has a built-in compositor, switched off through xfconf;
- *  - picom and compton (common with LXQt, Openbox and other window managers)
- *    run as their own process, which is stopped and later started again with
- *    the same command line.
+ *  - picom, compton and xcompmgr (common with LXQt, LXDE, Openbox and other
+ *    window managers) run as their own process, which is stopped and later
+ *    started again with the same command line.
  * A small watchdog process puts the previous compositor back as soon as xcrt is
  * gone, whether it exits cleanly, crashes or is killed. */
 
@@ -13,6 +13,7 @@
 
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -26,7 +27,7 @@
 #define XFWM4_QUERY "xfconf-query -c xfwm4 -p /general/use_compositing"
 
 /* Standalone compositors that are safe to stop and start again. */
-static const char *const known_compositors[] = { "picom", "compton" };
+static const char *const known_compositors[] = { "picom", "compton", "xcompmgr" };
 
 /* signals the watchdog ignores; they must be reset before starting a compositor */
 static const int watchdog_ignored[] = { SIGINT, SIGTERM, SIGHUP, SIGUSR1, SIGUSR2, SIGPIPE };
@@ -105,24 +106,86 @@ static ssize_t read_proc(pid_t pid, const char *what, char *buf, size_t len)
     return n;
 }
 
+static bool is_known_compositor(const char *name)
+{
+    for (size_t i = 0; i < sizeof(known_compositors) / sizeof(known_compositors[0]); i++)
+        if (!strcmp(name, known_compositors[i]))
+            return true;
+    return false;
+}
+
+/* Display number of a DISPLAY string (":7", ":7.0", "unix:7"), or -1. */
+static int display_number(const char *s)
+{
+    const char *colon = s ? strrchr(s, ':') : NULL;
+    return colon && colon[1] >= '0' && colon[1] <= '9' ? atoi(colon + 1) : -1;
+}
+
+/* xcompmgr does not publish _NET_WM_PID. Its selection window is named after
+ * it, so look for the only process of this user with that name that is
+ * connected to the same display; give up if there is more than one. */
+static pid_t pid_by_name(Display *dpy, Window owner)
+{
+    char *name = NULL;
+    if (!XFetchName(dpy, owner, &name) || !name)
+        return 0;
+    char wanted[64];
+    snprintf(wanted, sizeof(wanted), "%s", name);
+    XFree(name);
+    if (!is_known_compositor(wanted))
+        return 0;
+
+    int dpy_num = display_number(DisplayString(dpy));
+    DIR *proc = opendir("/proc");
+    if (!proc)
+        return 0;
+    pid_t found = 0;
+    int matches = 0;
+    struct dirent *e;
+    while ((e = readdir(proc))) {
+        pid_t pid = atoi(e->d_name);
+        char comm[64];
+        if (pid <= 0 || read_proc(pid, "comm", comm, sizeof(comm)) <= 0)
+            continue;
+        comm[strcspn(comm, "\n")] = '\0';
+        if (strcmp(comm, wanted))
+            continue;
+        /* other users' environments are unreadable, which also skips them */
+        static char env[65536];
+        ssize_t n = read_proc(pid, "environ", env, sizeof(env));
+        for (char *p = env; n > 0 && p < env + n; p += strlen(p) + 1)
+            if (!strncmp(p, "DISPLAY=", 8) && display_number(p + 8) == dpy_num) {
+                found = pid;
+                matches++;
+                break;
+            }
+    }
+    closedir(proc);
+    if (matches > 1)
+        LOG("%d processes named %s use this display; not stopping any of them\n", matches, wanted);
+    return matches == 1 ? found : 0;
+}
+
 /* PID of the process owning the compositor selection, if it is one of the
  * known compositors, runs on this machine and belongs to this user. */
 static pid_t known_compositor_pid(Display *dpy, Window owner)
 {
     Atom pid_atom = XInternAtom(dpy, "_NET_WM_PID", True);
-    if (pid_atom == None)
-        return 0;
-    Atom type;
-    int format;
-    unsigned long n, after;
-    unsigned char *data = NULL;
     pid_t pid = 0;
-    if (XGetWindowProperty(dpy, owner, pid_atom, 0, 1, False, XA_CARDINAL, &type, &format, &n, &after,
-                           &data) == Success && data) {
-        if (type == XA_CARDINAL && format == 32 && n == 1)
-            pid = (pid_t)*(unsigned long *)data;
-        XFree(data);
+    if (pid_atom != None) {
+        Atom type;
+        int format;
+        unsigned long n, after;
+        unsigned char *data = NULL;
+        if (XGetWindowProperty(dpy, owner, pid_atom, 0, 1, False, XA_CARDINAL, &type, &format, &n,
+                               &after, &data) == Success && data) {
+            if (type == XA_CARDINAL && format == 32 && n == 1)
+                pid = (pid_t)*(unsigned long *)data;
+            XFree(data);
+        }
     }
+    if (pid <= 0)
+        pid = pid_by_name(dpy, owner);
     if (pid <= 0)
         return 0;
 
@@ -141,9 +204,7 @@ static pid_t known_compositor_pid(Display *dpy, Window owner)
     if (read_proc(pid, "comm", comm, sizeof(comm)) <= 0)
         return 0;
     comm[strcspn(comm, "\n")] = '\0';
-    bool known = false;
-    for (size_t i = 0; i < sizeof(known_compositors) / sizeof(known_compositors[0]); i++)
-        known |= !strcmp(comm, known_compositors[i]);
+    bool known = is_known_compositor(comm);
 
     char path[64];
     struct stat st;

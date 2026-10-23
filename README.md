@@ -16,7 +16,7 @@ curvature and clicks land exactly where they appear to.
 |---|---|
 | WMs without a compositor: i3, bspwm, openbox, dwm, awesome, fluxbox, herbstluftwm, IceWM… | yes |
 | XFCE (xfwm4) | yes; xcrt pauses the xfwm4 compositor by itself (see [XFCE](#xfce)) |
-| LXQt, and any WM running picom or compton | yes; xcrt stops picom/compton and starts it again on exit (see [LXQt](#lxqt)) |
+| LXQt, LXDE, and any WM running picom, compton or xcompmgr | yes; xcrt stops that compositor and starts it again on exit (see [LXQt](#lxqt), [LXDE](#lxde)) |
 | marco and other compositors | yes, after turning their compositing off |
 | Cinnamon | yes, through the `xcrt@xcrt` extension (see [Cinnamon](#cinnamon)) |
 | GNOME, KDE (the WM is the compositor) | not yet; they need their own plugin |
@@ -180,6 +180,26 @@ installed):
 
 ```sh
 lxqt/try-in-xephyr.sh
+```
+
+## LXDE
+
+LXDE runs Openbox, which has no compositor, so xcrt works on it as it is.
+Composited LXDE setups usually add xcompmgr (or picom/compton); xcrt stops it
+and starts it again with the same command line when it exits, just as on LXQt,
+with the same `xcrt-restore` watchdog. xcompmgr does not publish its process
+ID, so xcrt looks for the one process of yours named `xcompmgr` that uses the
+same display; if there is more than one, it stops none of them and asks you to
+turn compositing off yourself.
+
+To start xcrt with the session, use `make install-autostart` (see
+[XFCE](#xfce)); lxsession also runs the standard XDG autostart entries.
+
+To try it without touching your session, this script runs Openbox, lxpanel, the
+pcmanfm desktop and xcompmgr inside Xephyr:
+
+```sh
+lxde/try-in-xephyr.sh
 ```
 
 ## Cinnamon
