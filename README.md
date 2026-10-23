@@ -16,7 +16,8 @@ curvature and clicks land exactly where they appear to.
 |---|---|
 | WMs without a compositor: i3, bspwm, openbox, dwm, awesome, fluxbox, herbstluftwm, IceWM… | yes |
 | XFCE (xfwm4) | yes; xcrt pauses the xfwm4 compositor by itself (see [XFCE](#xfce)) |
-| marco / picom | yes, after turning their compositing off |
+| LXQt, and any WM running picom or compton | yes; xcrt stops picom/compton and starts it again on exit (see [LXQt](#lxqt)) |
+| marco and other compositors | yes, after turning their compositing off |
 | Cinnamon | yes, through the `xcrt@xcrt` extension (see [Cinnamon](#cinnamon)) |
 | GNOME, KDE (the WM is the compositor) | not yet; they need their own plugin |
 
@@ -134,7 +135,7 @@ returns to normal.
 
 xfwm4 has its own compositor. When xcrt starts on XFCE it switches that
 compositor off (the same switch as *Window Manager Tweaks → Compositor*) and
-switches it back on when xcrt exits. A small watchdog process, `xcrt-xfwm4`,
+switches it back on when xcrt exits. A small watchdog process, `xcrt-restore`,
 does the restoring, so it also happens if xcrt crashes or is killed with
 `kill -9`. If you had already turned the xfwm4 compositor off yourself, xcrt
 leaves it off.
@@ -156,6 +157,29 @@ and D-Bus:
 
 ```sh
 xfce/try-in-xephyr.sh
+```
+
+## LXQt
+
+LXQt has no compositor of its own: it runs a window manager (Openbox by
+default) and usually picom for compositing. When xcrt starts and finds picom or
+compton running, it stops it and starts it again with the same command line
+once xcrt exits. As on XFCE, the `xcrt-restore` watchdog takes care of that even
+if xcrt crashes or is killed. xcrt only ever stops processes named `picom` or
+`compton` that belong to you; any other compositor is left alone, and xcrt
+asks you to turn it off instead.
+
+The same applies to Openbox, i3 and other window managers that run picom.
+
+To start xcrt with the session, use `make install-autostart` (see [XFCE](#xfce))
+or add `xcrt` in *LXQt Configuration Center → Session Settings → Autostart*.
+
+To try it without touching your session, this script runs Openbox and picom
+inside Xephyr (plus lxqt-panel and the pcmanfm-qt desktop when they are
+installed):
+
+```sh
+lxqt/try-in-xephyr.sh
 ```
 
 ## Cinnamon
