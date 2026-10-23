@@ -10,6 +10,8 @@ screen into an OpenGL texture and runs the CRT shader on each monitor before
 showing it. The cursor is drawn inside the scene too, so it follows the
 curvature and clicks land exactly where they appear to.
 
+![An XFCE desktop seen through xcrt with the arcade preset](docs/screenshots/hero.jpg)
+
 ## Compatibility
 
 | Environment | Works? |
@@ -21,6 +23,8 @@ curvature and clicks land exactly where they appear to.
 | other compositors | yes, after turning their compositing off |
 | Cinnamon | yes, through the `xcrt@xcrt` extension (see [Cinnamon](#cinnamon)) |
 | GNOME, KDE (the WM is the compositor) | not yet; they need their own plugin |
+
+![The arcade preset on XFCE, MATE and Cinnamon](docs/screenshots/desktops.jpg)
 
 Only one compositor can run at a time. If another one is active, xcrt says so
 and exits. On Cinnamon, use the extension instead of the `xcrt` executable.
@@ -74,6 +78,8 @@ in effect when you switch presets, and each preset keeps its shape (`trinitron`
 stays curved horizontally only). The starting value comes from
 `curvature_scale` in the config or from `-k/--curvature`.
 
+![The arcade preset at 0%, 100% and 250% curvature intensity](docs/screenshots/curvature.jpg)
+
 ## Tuning the effects
 
 ### Graphical interface
@@ -88,6 +94,8 @@ Interference). Changes show up on screen immediately. **Save** writes the preset
 to the config file, **Save as…** creates a new preset and **Discard** goes back
 to the saved values. The window also follows changes made with hotkeys or from
 the command line. If xcrt is not running, it offers a button to start it.
+
+![The xcrt-gui window, itself shown through the pc preset](docs/screenshots/xcrt-gui.jpg)
 
 ### Command line
 
@@ -238,6 +246,8 @@ button opens its settings: preset, curvature intensity and every effect, grouped
 in tabs and applied immediately. Changing an effect switches the preset to
 *Custom*.
 
+![The settings window of the Cinnamon extension](docs/screenshots/cinnamon-settings.jpg)
+
 | Shortcut (editable in the General tab) | Action |
 |---|---|
 | `Super+Shift+F12` | toggle the filter |
@@ -266,6 +276,8 @@ Cinnamon with `Ctrl+Alt+Esc`.
 
 ## Presets
 
+![The same desktop with each of the six presets](docs/screenshots/presets.jpg)
+
 | Name | Look |
 |---|---|
 | `arcade` | strong curvature, slot mask, pronounced scanlines, bloom |
@@ -274,6 +286,11 @@ Cinnamon with `Ctrl+Alt+Esc`.
 | `tv` | CRT TV: noise, jitter, hum bar, shadow mask |
 | `green` | green phosphor terminal with persistence |
 | `amber` | amber phosphor terminal |
+
+Up close (3× zoom), the scanlines, the phosphor mask and the slight chromatic
+aberration of `pc` and `arcade`:
+
+![Scanlines and phosphor mask of the pc and arcade presets, zoomed in](docs/screenshots/closeup.png)
 
 ## Configuration
 

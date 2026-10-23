@@ -441,8 +441,11 @@ class Window(Gtk.Window):
                     r, g, b = (min(max(float(v), 0.0), 1.0) for v in val.split()[:3])
                     w.set_rgba(Gdk.RGBA(r, g, b, 1.0))
 
-            self.status.set_text("Connected to xcrt on %s  ·  %s"
-                                 % (self.link.display_name, st.get("config", "")))
+            config = st.get("config", "")
+            home = os.path.expanduser("~")
+            if config.startswith(home + "/"):
+                config = "~" + config[len(home):]
+            self.status.set_text("Connected to xcrt on %s  ·  %s" % (self.link.display_name, config))
         finally:
             self.updating = False
 
