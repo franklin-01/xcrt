@@ -17,7 +17,8 @@ curvature and clicks land exactly where they appear to.
 | WMs without a compositor: i3, bspwm, openbox, dwm, awesome, fluxbox, herbstluftwm, IceWM… | yes |
 | XFCE (xfwm4) | yes; xcrt pauses the xfwm4 compositor by itself (see [XFCE](#xfce)) |
 | LXQt, LXDE, and any WM running picom, compton or xcompmgr | yes; xcrt stops that compositor and starts it again on exit (see [LXQt](#lxqt), [LXDE](#lxde)) |
-| marco and other compositors | yes, after turning their compositing off |
+| MATE (Marco) | yes; xcrt pauses the Marco compositor by itself (see [MATE](#mate)) |
+| other compositors | yes, after turning their compositing off |
 | Cinnamon | yes, through the `xcrt@xcrt` extension (see [Cinnamon](#cinnamon)) |
 | GNOME, KDE (the WM is the compositor) | not yet; they need their own plugin |
 
@@ -200,6 +201,26 @@ pcmanfm desktop and xcompmgr inside Xephyr:
 
 ```sh
 lxde/try-in-xephyr.sh
+```
+
+## MATE
+
+Marco, MATE's window manager, has its own compositor. xcrt switches it off while
+it runs (the same switch as *Control Center → Windows → General → Enable
+software compositing window manager*) and back on when xcrt exits, with the same
+`xcrt-restore` watchdog as on XFCE, so that also happens after a crash or
+`kill -9`. If you had already turned Marco's compositor off, xcrt leaves it off.
+Setups that run Marco together with picom (MATE Tweak offers this) are covered
+by the picom support described under [LXQt](#lxqt).
+
+To start xcrt with the session, use `make install-autostart` (see
+[XFCE](#xfce)) or add `xcrt` in *Control Center → Startup Applications*.
+
+To try it without touching your session, this script runs Marco with its
+compositor on, mate-panel and the caja desktop inside Xephyr:
+
+```sh
+mate/try-in-xephyr.sh
 ```
 
 ## Cinnamon

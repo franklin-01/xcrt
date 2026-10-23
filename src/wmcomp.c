@@ -2,7 +2,8 @@
 // Copyright (C) 2026 Franklin Cordeiro
 
 /* Compositors that xcrt replaces while it runs, instead of refusing to start:
- *  - xfwm4 (XFCE) has a built-in compositor, switched off through xfconf;
+ *  - xfwm4 (XFCE) and Marco (MATE) have a built-in compositor, switched off
+ *    through their own settings;
  *  - picom, compton and xcompmgr (common with LXQt, LXDE, Openbox and other
  *    window managers) run as their own process, which is stopped and later
  *    started again with the same command line.
@@ -24,7 +25,25 @@
 #include <time.h>
 #include <unistd.h>
 
-#define XFWM4_QUERY "xfconf-query -c xfwm4 -p /general/use_compositing"
+/* Window managers whose built-in compositor is a setting. `get` prints "true"
+ * while it is on; `where` tells the user how to change it by hand. */
+static const struct setting_compositor {
+    const char *wm; /* found in the window manager's _NET_WM_NAME */
+    const char *label;
+    const char *get, *off, *on;
+    const char *where;
+} setting_compositors[] = {
+    { "Xfwm4", "xfwm4",
+      "xfconf-query -c xfwm4 -p /general/use_compositing",
+      "xfconf-query -c xfwm4 -p /general/use_compositing -s false",
+      "xfconf-query -c xfwm4 -p /general/use_compositing -s true",
+      "Window Manager Tweaks > Compositor" },
+    { "Marco", "Marco",
+      "gsettings get org.mate.Marco.general compositing-manager",
+      "gsettings set org.mate.Marco.general compositing-manager false",
+      "gsettings set org.mate.Marco.general compositing-manager true",
+      "Control Center > Windows > General" },
+};
 
 /* Standalone compositors that are safe to stop and start again. */
 static const char *const known_compositors[] = { "picom", "compton", "xcompmgr" };
@@ -32,7 +51,7 @@ static const char *const known_compositors[] = { "picom", "compton", "xcompmgr" 
 /* signals the watchdog ignores; they must be reset before starting a compositor */
 static const int watchdog_ignored[] = { SIGINT, SIGTERM, SIGHUP, SIGUSR1, SIGUSR2, SIGPIPE };
 
-static bool   restore_xfwm4; /* turn xfwm4's compositor back on */
+static const struct setting_compositor *restore_setting; /* turn back on afterwards */
 static char **restart_argv;  /* command line of a compositor to start again */
 static char   restart_name[64];
 
@@ -77,19 +96,16 @@ static char *wm_name(Display *dpy, Window root)
     return result;
 }
 
-static bool xfwm4_compositing_on(void)
+static bool setting_is_on(const struct setting_compositor *sc)
 {
-    FILE *f = popen(XFWM4_QUERY " 2>/dev/null", "r");
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "%s 2>/dev/null", sc->get);
+    FILE *f = popen(cmd, "r");
     if (!f)
         return false;
     char buf[16] = "";
     bool read_ok = fgets(buf, sizeof(buf), f) != NULL;
     return pclose(f) == 0 && read_ok && !strncmp(buf, "true", 4);
-}
-
-static bool set_xfwm4_compositing(bool on)
-{
-    return system(on ? XFWM4_QUERY " -s true" : XFWM4_QUERY " -s false") == 0;
 }
 
 static ssize_t read_proc(pid_t pid, const char *what, char *buf, size_t len)
@@ -280,12 +296,12 @@ static void watchdog(int fd, const char *display, const char *selection)
             sleep_ms(50);
         XCloseDisplay(dpy);
     }
-    if (restore_xfwm4) {
-        if (set_xfwm4_compositing(true))
-            fprintf(stderr, "xcrt: xfwm4 compositor restored\n");
+    if (restore_setting) {
+        if (system(restore_setting->on) == 0)
+            fprintf(stderr, "xcrt: %s compositor restored\n", restore_setting->label);
         else
-            fprintf(stderr, "xcrt: could not turn the xfwm4 compositor back on; enable it in "
-                            "Window Manager Tweaks > Compositor\n");
+            fprintf(stderr, "xcrt: could not turn the %s compositor back on; enable it in %s\n",
+                    restore_setting->label, restore_setting->where);
     } else if (restart_argv) {
         restart_compositor();
     }
@@ -318,13 +334,17 @@ bool wmcomp_pause(xcrt *x, const char *selection)
 {
     Atom sel = XInternAtom(x->dpy, selection, False);
     char *name = wm_name(x->dpy, x->root);
-    bool xfwm4 = name && !strcasecmp(name, "Xfwm4");
+    const struct setting_compositor *sc = NULL;
+    /* a substring match: Marco calls itself "Metacity (Marco)" */
+    for (size_t i = 0; name && i < sizeof(setting_compositors) / sizeof(setting_compositors[0]); i++)
+        if (strcasestr(name, setting_compositors[i].wm))
+            sc = &setting_compositors[i];
     DBG(x, "window manager: %s\n", name ? name : "(none)");
     free(name);
 
     pid_t pid = 0;
-    if (xfwm4 && xfwm4_compositing_on()) {
-        restore_xfwm4 = true;
+    if (sc && setting_is_on(sc)) {
+        restore_setting = sc;
     } else {
         Window owner = XGetSelectionOwner(x->dpy, sel);
         if (owner != None && (pid = known_compositor_pid(x->dpy, owner)) > 0)
@@ -338,10 +358,10 @@ bool wmcomp_pause(xcrt *x, const char *selection)
         LOG("could not start the watchdog that restores the previous compositor\n");
         return false;
     }
-    if (restore_xfwm4) {
-        LOG("pausing the xfwm4 compositor while xcrt runs\n");
-        if (!set_xfwm4_compositing(false)) {
-            LOG("xfconf-query failed; turn off compositing in Window Manager Tweaks > Compositor\n");
+    if (restore_setting) {
+        LOG("pausing the %s compositor while xcrt runs\n", sc->label);
+        if (system(sc->off) != 0) {
+            LOG("could not switch it off; turn off compositing in %s\n", sc->where);
             return false;
         }
     } else {

@@ -477,9 +477,9 @@ static bool become_compositor(xcrt *x)
         return false;
     if (XGetSelectionOwner(x->dpy, sel) != None) {
         LOG("another compositor is already running on this screen.\n"
-            "      xcrt replaces xfwm4, picom, compton and xcompmgr by itself, but not this one;\n"
-            "      turn its compositing off first. Cinnamon, GNOME and KDE always composite\n"
-            "      (Cinnamon has the xcrt@xcrt extension instead).\n");
+            "      xcrt replaces xfwm4, Marco, picom, compton and xcompmgr by itself, but not\n"
+            "      this one; turn its compositing off first. Cinnamon, GNOME and KDE always\n"
+            "      composite (Cinnamon has the xcrt@xcrt extension instead).\n");
         return false;
     }
     x->cm_owner = XCreateSimpleWindow(x->dpy, x->root, 0, 0, 1, 1, 0, 0, 0);
